@@ -1,64 +1,87 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
-  FaLocationDot,
-  FaPhone,
-  FaEnvelope,
+  FaPeopleRoof,
 } from "react-icons/fa6";
 
+import {
+  FaMapMarkedAlt,
+} from "react-icons/fa";
+import { TbWorldLatitude } from "react-icons/tb";
+import { TbWorldLongitude } from "react-icons/tb";
+import Controls from "./controls";
 import Modal from "./modal";
 
-import { User } from "./types/user";
+import { Country } from "./types/user";
 
 export type GalleryProps = {
-  users: User[];
+  countries: Country[];
 };
-const Gallery = ({ users }: GalleryProps) => {
-  const [usersList, setUsersList] = useState(users);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+const Gallery = ({ countries }: GalleryProps) => {
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [countryList, setCountries] = useState(countries);
+  const [group, setGroup] = useState("");
+  const [order, setOrder] = useState("");
 
-  const handleModalOpen = (id: number) => {
-    const user = usersList.find((item) => item.id === id) || null;
-
-    if(user) {
-      setSelectedUser(user);
+  const handleModalOpen = (name: number) => {
+    const country = countryList.find((item) => item.name === name) || null;
+    console.log(country)
+    if (country) {
+      setSelectedCountry(country);
       setIsModalOpen(true);
     }
   };
 
   const handleModalClose = () => {
-    setSelectedUser(null);
+    setSelectedCountry(null);
     setIsModalOpen(false);
   };
 
+  const handleFiltering = (group: any, order: any) => {
+    if (group) {
+      setGroup(group)
+    }
+    if (order) {
+      setOrder(order)
+    }
+    if (group.length < 0 || order.length < 0) {
+      setCountries(countries)
+    }
+  }
+
   return (
     <div className="user-gallery">
-      <h1 className="heading">Users</h1>
+      <h1 className="heading">
+        Countries
+        <Controls getGroupFilter={handleFiltering} />
+      </h1>
       <div className="items">
-        {usersList.map((user, index) => (
-          <div
-            className="item user-card"
-            key={index}
-            onClick={() => handleModalOpen(user.id)}
-          >
-            <div className="body">
-              <Avatar
-                size={96}
-                name={user.name}
-                variant="marble"
-                colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
-              />
+        {countryList.length > 0 ? countryList
+          .filter(e => { return group.includes(e.name.common) || group.length <= 0 })
+          .filter(e => { return order.includes(e.region) || order.length <= 0 }).map((country, index) => (
+            <div
+              className="item user-card"
+              key={index}
+              onClick={() => handleModalOpen(country.name)}
+            >
+              <div className="body">
+                <Avatar
+                  size={96}
+                  name={country.name}
+                  variant="marble"
+                  colors={["#92A1C6", "#146A7C", "#F0AB3D", "#C271B4", "#C20D90"]}
+                />
+              </div>
+              <div className="info">
+                <div className="name">{country.name.common} ({country.region})</div>
+                <div className="company">{country.name.official}</div>
+              </div>
             </div>
-            <div className="info">
-              <div className="name">{user.name}</div>
-              <div className="company">{user.company.name}</div>
-            </div>
-          </div>
-        ))}
+          )) : null}
         <Modal isOpen={isModalOpen} onClose={handleModalClose}>
           <div className="user-panel">
             <div className="header">
@@ -72,13 +95,13 @@ const Gallery = ({ users }: GalleryProps) => {
               </div>
             </div>
             <div className="body">
-              {selectedUser && (
+              {selectedCountry && (
                 <div className="user-info info">
                   <div className="avatar">
                     <Avatar
                       size={240}
-                      name={selectedUser.name}
                       variant="marble"
+                      src={selectedCountry.flags.png}
                       colors={[
                         "#92A1C6",
                         "#146A7C",
@@ -89,24 +112,27 @@ const Gallery = ({ users }: GalleryProps) => {
                     />
                   </div>
                   <div className="name">
-                    {selectedUser.name} ({selectedUser.username})
+                    {selectedCountry.name.common}
+                    <div className="value">{selectedCountry.name.official}</div>
                   </div>
                   <div className="field">
-                    <FaLocationDot className="icon" />
-                    <div className="data">{`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}`}</div>
+                    <FaMapMarkedAlt className="icon" />
+                    <div className="value">{selectedCountry.region}</div>
                   </div>
                   <div className="field">
-                    <FaPhone className="icon" />
-                    <div className="value">{selectedUser.phone}</div>
+                    <FaPeopleRoof className="icon" />
+                    <div className="value">{selectedCountry.population}</div>
                   </div>
-                  <div className="fields">
-                    <FaEnvelope className="icon" />
-                    <div className="value">{selectedUser.email}</div>
+                  <div className="field">
+                    <TbWorldLatitude className="icon" />
+                    <div className="value">{selectedCountry.latlng[0]}</div>
+                    <TbWorldLongitude className="icon" style={{ marginLeft: "10px" }} />
+                    <div className="value">{selectedCountry.latlng[1]}</div>
                   </div>
                   <div className="company">
-                    <div className="name">{selectedUser.company.name}</div>
+                    {/* <div className="name">{selectedCountry.company.name}</div> */}
                     <div className="catchphrase">
-                      {selectedUser.company.catchPhrase}
+                      {/* {selectedCountry.company.catchPhrase} */}
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,14 @@
 .user-gallery {
   width: 100%;
 
-  > .items {
+  >.heading {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  >.items {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
@@ -12,7 +19,7 @@
     }
   }
 
-  > .heading + .items {
+  >.heading+.items {
     margin-top: 32px;
   }
 }

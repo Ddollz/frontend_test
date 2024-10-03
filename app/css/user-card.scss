@@ -12,13 +12,13 @@
     background-color: #dfe1e6;
   }
 
-  > .body {
+  >.body {
     flex: 0 0 96px;
     display: flex;
     justify-content: center;
   }
 
-  > .info {
+  >.info {
     flex: 2 0 66%;
     display: flex;
     justify-content: center;
@@ -26,16 +26,16 @@
     flex-flow: column nowrap;
   }
 
-  > .body + .info {
+  >.body+.info {
     margin-left: 16px;
   }
 
-  > .info > .name {
+  >.info>.name {
     font-size: 18px;
     font-weight: 600;
   }
 
-  > .info > .company {
+  >.info>.company {
     color: #253858;
   }
 }

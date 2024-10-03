@@ -1,14 +1,13 @@
-export type User = {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: Address;
-  phone: string;
-  website: string;
-  company: Company;
-};
 
+// =name, flags, population, region, currencies
+export type Country = {
+  name:any;
+  region: string;
+  currencies: any;
+  population: number;
+  flags: any;
+  latlng: number[];
+};
 export type Address = {
   street: string;
   suite: string;
