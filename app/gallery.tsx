@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Avatar from "boring-avatars";
 import {
   FaRegCircleXmark,
@@ -21,8 +21,6 @@ const Gallery = ({ users }: GalleryProps) => {
   const [usersList, setUsersList] = useState(users);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [group, setGroup] = useState("");
-  const [order, setOrder] = useState("");
 
   const handleModalOpen = (id: number) => {
     const user = usersList.find((item) => item.id === id) || null;
@@ -38,49 +36,11 @@ const Gallery = ({ users }: GalleryProps) => {
     setIsModalOpen(false);
   };
 
-  const handleFiltering = async (group: any, order: string) => {
-    if (group) {
-      setGroup(group)
-    }
-    if (order) {
-      setOrder(order)
-    }
-
-    if (group && order) {
-      if (order == "ascending") {
-        if (group == "company") {
-          setUsersList(usersList.sort((a: any, b: any) => a.company.name.localeCompare(b.company.name)));
-        } else {
-          setUsersList(usersList.sort((a: any, b: any) => a[group].localeCompare(b[group])));
-        }
-      } else if (order == "descending") {
-        if (group == "company") {
-          setUsersList(usersList.sort((a: any, b: any) => b.company.name.localeCompare(a.company.name)));
-        } else {
-          setUsersList(usersList.sort((a: any, b: any) => b[group].localeCompare(a[group])));
-        }
-      }
-    } else if (!group && order) {
-      if (order == "ascending") {
-        setUsersList(usersList.sort((a: any, b: any) => a.id-b.id));
-      } else if (order == "descending") {
-        setUsersList(usersList.sort((a: any, b: any) => b.id-a.id));
-      }
-    } else if (group && !order) {
-      if (group == "company") {
-        setUsersList(usersList.sort((a: any, b: any) => a.company.name.localeCompare(b.company.name)));
-      } else {
-        setUsersList(usersList.sort((a: any, b: any) => a[group].localeCompare(b[group])));
-      }
-    }
-
-  }
-
   return (
     <div className="user-gallery">
       <div className="heading">
         <h1 className="title">Users</h1>
-        <Controls getGroupFilter={handleFiltering} />
+        <Controls />
       </div>
       <div className="items">
         {usersList.map((user, index) => (
